@@ -9,6 +9,7 @@ const refs = {
 
 const newsApiServise = new NewsApiServise();
 
+
 const element = document.getElementById('my-element-selector');
 element.scrollIntoView({
   behavior: 'smooth',
@@ -18,22 +19,31 @@ element.scrollIntoView({
 refs.searchform.addEventListener('submit', onSearch);
 element.addEventListener('click', onLoadMore);
 
+
+
+
 function onSearch(e) {
     e.preventDefault();
+    clearHitsContainer();
 
     newsApiServise.query = e.currentTarget.elements.query.value;
     newsApiServise.resetPage();
     newsApiServise.fetchHits()
-        .then(createHitsMarkup);
+        .then(appendHitsMarkup);
 
 }
 
 function onLoadMore(e) {
     newsApiServise.fetchHits()
-        .then(createHitsMarkup);
+        .then(appendHitsMarkup);
 }
 
-function createHitsMarkup(hits) {
+function appendHitsMarkup(hits) {
     refs.hitsContainer.insertAdjacentHTML('beforeend', hitsTpl(hits));
 }
+
+function clearHitsContainer() {
+    refs.hitsContainer.innerHTML = '';
+}
+
 
