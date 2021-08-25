@@ -1,14 +1,14 @@
+
+import { alert, info, success, error } from '../../node_modules/@pnotify/core/dist/PNotify';
+//import debounce from 'lodash.debounce';
 import hitsTpl from "../templates/hits-card.hbs";
-import NewsApiServise from "./apiService";
+import NewsApiServise from "../js/apiService.js";
 
 
 const refs = {
     searchform: document.querySelector('#search-form'),
     hitsContainer: document.querySelector('.gallery')
 }
-
-const newsApiServise = new NewsApiServise();
-
 
 const element = document.getElementById('my-element-selector');
 element.scrollIntoView({
@@ -19,18 +19,33 @@ element.scrollIntoView({
 refs.searchform.addEventListener('submit', onSearch);
 element.addEventListener('click', onLoadMore);
 
-
-
+const newsApiServise = new NewsApiServise();
 
 function onSearch(e) {
     e.preventDefault();
-    clearHitsContainer();
-
+    
     newsApiServise.query = e.currentTarget.elements.query.value;
-    newsApiServise.resetPage();
+    
+    if (newsApiServise.query.trim() === '') {
+        info({
+            text: "Введите запрос в поле ввода!"
+        })
+    } else {
+        newsApiServise.resetPage();
     newsApiServise.fetchHits()
-        .then(appendHitsMarkup);
+        .then(hits => {
 
+            if (hits.length === 0) {
+                info({
+                    text: "По вашему запросу ничего не найдено!"
+                })
+            }
+
+            clearHitsContainer();
+            appendHitsMarkup(hits);
+        });   
+    }
+      
 }
 
 function onLoadMore(e) {
