@@ -8,7 +8,7 @@ const refs = {
     searchform: document.querySelector('#search-form'),
     hitsContainer: document.querySelector('.gallery'),
     btnLoadMore: document.querySelector('.btn'),
-    label: document.querySelector('.label')
+    label: document.querySelector('input')
 }
 
 refs.searchform.addEventListener('submit', onSearch);
@@ -46,6 +46,11 @@ function onSearch(e) {
                 error({
                     text: "Ошибка! Введите запрос в поле ввода!"
                 })
+            })
+            .finally(() => {
+                
+                refs.label.value = "";
+                
             });
     }
       
