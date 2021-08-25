@@ -16,8 +16,6 @@ refs.btnLoadMore.addEventListener('click', onLoadMore);
 
 const newsApiServise = new NewsApiServise();
 
-refs.btnLoadMore.disabled = true;
-
 function onSearch(e) {
     e.preventDefault();
     
@@ -31,7 +29,7 @@ function onSearch(e) {
         newsApiServise.resetPage();
         newsApiServise.fetchHits()
             .then(hits => {
-                refs.btnLoadMore.disabled = false;
+                refs.btnLoadMore.style.display = '';
 
                 if (hits.length === 0) {
                     info({
@@ -59,14 +57,13 @@ function onSearch(e) {
 function onLoadMore(e) {
     newsApiServise.fetchHits()
         .then(hits => {
-            refs.btnLoadMore.disabled = false;
             appendHitsMarkup(hits);
             
             setTimeout(() => {
                 e.target.scrollIntoView({
                     behavior: 'smooth',
                 });
-            }, 200);
+            }, 300);
         });
 }
 
