@@ -7,17 +7,23 @@ import NewsApiServise from "../js/apiService.js";
 
 const refs = {
     searchform: document.querySelector('#search-form'),
-    hitsContainer: document.querySelector('.gallery')
+    hitsContainer: document.querySelector('.gallery'),
+    btnLoadMore: document.querySelector('#btn')
 }
 
 const element = document.getElementById('my-element-selector');
-element.scrollIntoView({
+
+
+function onBtnLoadMoreClick() {
+    element.scrollIntoView({
   behavior: 'smooth',
   block: 'end',
 });
+}
 
 refs.searchform.addEventListener('submit', onSearch);
-element.addEventListener('click', onLoadMore);
+refs.btnLoadMore.addEventListener('click', onLoadMore);
+refs.btnLoadMore.addEventListener('click', onBtnLoadMoreClick);
 
 const newsApiServise = new NewsApiServise();
 
@@ -25,7 +31,7 @@ function onSearch(e) {
     e.preventDefault();
     
     newsApiServise.query = e.currentTarget.elements.query.value;
-    
+
     if (newsApiServise.query.trim() === '') {
         info({
             text: "Введите запрос в поле ввода!"
