@@ -1,6 +1,5 @@
 
 import { alert, info, success, error } from '../../node_modules/@pnotify/core/dist/PNotify';
-//import debounce from 'lodash.debounce';
 import hitsTpl from "../templates/hits-card.hbs";
 import NewsApiServise from "../js/apiService.js";
 
@@ -8,27 +7,16 @@ import NewsApiServise from "../js/apiService.js";
 const refs = {
     searchform: document.querySelector('#search-form'),
     hitsContainer: document.querySelector('.gallery'),
-    btnLoadMore: document.querySelector('#btn')
-}
-
-const element = document.getElementById('my-element-selector');
-
-
-function onBtnLoadMoreClick() {
-    element.scrollIntoView({
-  behavior: 'smooth',
-  block: 'end',
-});
+    btnLoadMore: document.querySelector('.btn'),
+    label: document.querySelector('.label')
 }
 
 refs.searchform.addEventListener('submit', onSearch);
 refs.btnLoadMore.addEventListener('click', onLoadMore);
-refs.btnLoadMore.addEventListener('click', onBtnLoadMoreClick);
 
 const newsApiServise = new NewsApiServise();
 
- refs.btnLoadMore.disabled = true;
-console.log(refs.btnLoadMore.disabled);
+refs.btnLoadMore.disabled = true;
 
 function onSearch(e) {
     e.preventDefault();
@@ -41,19 +29,24 @@ function onSearch(e) {
         })
     } else {
         newsApiServise.resetPage();
-    newsApiServise.fetchHits()
-        .then(hits => {
-            refs.btnLoadMore.disabled = false;
+        newsApiServise.fetchHits()
+            .then(hits => {
+                refs.btnLoadMore.disabled = false;
 
-            if (hits.length === 0) {
-                info({
-                    text: "По вашему запросу ничего не найдено!"
+                if (hits.length === 0) {
+                    info({
+                        text: "По вашему запросу ничего не найдено!"
+                    })
+                }
+
+                clearHitsContainer();
+                appendHitsMarkup(hits);
+            })
+            .catch(error => {
+                error({
+                    text: "Ошибка! Введите запрос в поле ввода!"
                 })
-            }
-
-            clearHitsContainer();
-            appendHitsMarkup(hits);
-        });   
+            });
     }
       
 }
@@ -63,7 +56,13 @@ function onLoadMore(e) {
         .then(hits => {
             refs.btnLoadMore.disabled = false;
             appendHitsMarkup(hits);
-         });
+            
+            setTimeout(() => {
+                e.target.scrollIntoView({
+                    behavior: 'smooth',
+                });
+            }, 200);
+        });
 }
 
 function appendHitsMarkup(hits) {
