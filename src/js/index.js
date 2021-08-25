@@ -27,6 +27,9 @@ refs.btnLoadMore.addEventListener('click', onBtnLoadMoreClick);
 
 const newsApiServise = new NewsApiServise();
 
+ refs.btnLoadMore.disabled = true;
+console.log(refs.btnLoadMore.disabled);
+
 function onSearch(e) {
     e.preventDefault();
     
@@ -40,6 +43,7 @@ function onSearch(e) {
         newsApiServise.resetPage();
     newsApiServise.fetchHits()
         .then(hits => {
+            refs.btnLoadMore.disabled = false;
 
             if (hits.length === 0) {
                 info({
@@ -56,7 +60,10 @@ function onSearch(e) {
 
 function onLoadMore(e) {
     newsApiServise.fetchHits()
-        .then(appendHitsMarkup);
+        .then(hits => {
+            refs.btnLoadMore.disabled = false;
+            appendHitsMarkup(hits);
+         });
 }
 
 function appendHitsMarkup(hits) {
